@@ -16,7 +16,6 @@ def parse_args():
     parser.add_argument("--device", type=str, default="cpu", help="Device used to transcribe.")
     args = parser.parse_args()
     return args
-    print(args.filename)
 
 def main(args):
     model = whsp.load_model(args.model_size,device=args.device)
