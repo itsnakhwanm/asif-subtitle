@@ -1,34 +1,35 @@
 import re
 
 def normalize(s):
-    return re.sub(r"\s+", " ", s.lower().strip())
+    return re.sub(r"[^a-z0-9\-]", "", s.lower())
 
-def tokenize(s):
-    return normalize(s).split(" ")
-
-def align_segments_to_words(segments, word_timestamps):
-    w_words = [normalize(w["word"]) for w in word_timestamps]
+def align_independent(segments, word_timestamps):
 
     out = []
-    w_idx = 0
+    w_norm = [normalize(w["word"]) for w in word_timestamps]
     for segment in segments:
-        seg_words = tokenize(segment["word"])
-        if not seg_words:
-            continue
+        target = normalize(segment["word"])
+        best = None
+        for i in range(len(word_timestamps)):
+            acc = ""
+            start_time = word_timestamps[i]["start"]
+            for j in range(i, len(word_timestamps)):
+                acc += w_norm[j]
+                end_time = word_timestamps[j]["end"]
+                if acc == target:
+                    best = (start_time, end_time)
+                    break
 
-        start_time = None
-        end_time = None
+                if len(acc) > len(target):
+                    break
 
-        for i in range(w_idx, len(w_words) - len(seg_words) + 1):
-            if w_words[i:i+len(seg_words)] == seg_words:
-                start_time = word_timestamps[i]["start"]
-                end_time   = word_timestamps[i+len(seg_words)-1]["end"]
-                w_idx = i + len(seg_words)
+            if best:
                 break
 
-        if start_time is None:
-            continue
+        if best:
+            s, e = best
+        else:
+            s, e = segment["start"], segment["end"]
 
         out.append({"word": segment["word"].strip(), "start": round(start_time, 3), "end": round(end_time, 3)})
-
     return out
