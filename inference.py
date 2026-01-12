@@ -18,28 +18,38 @@ def parse_args():
     return args
 
 def main(args):
-    model = whsp.load_model(args.model_size,device=args.device)
-    result = model.transcribe(args.filename,word_timestamps=True,verbose=True)
+    model_size = args.model_size
+    device = args.device
+    filename = args.filename
+    max_words = args.max_words
+    output = args.output
+    output_basename, output_ext = os.path.splitext(output)
 
-    words=get_word_timestamps(result)
-    print(words)
-    texts=get_text(result)
-    texts=split_by_word_limit(texts,max_words=args.max_words)
-    print(texts)
-    aligned=align_independent(texts,words)
-    print(aligned)
+    model   = whsp.load_model(model_size,device=device)
+    result  = model.transcribe(filename,word_timestamps=True,verbose=True)
 
-    output_splitted = os.path.splitext(args.output)
-    if output_splitted[1] == ".srt":
-        write_srt(aligned, args.output)
-    elif output_splitted[1] == ".vtt":
-        write_vtt(aligned, args.output)
+    words   = get_word_timestamps(result)
+    texts   = get_text(result)
+    if args.max_words >= 2:
+        texts = split_by_word_limit(texts,max_words=max_words)
+    else:
+        texts = words
+
+    out_sub = align_independent(texts, words)
+    if output_ext == ".srt":
+        write_srt(out_sub, output)
+    elif output_ext == ".vtt":
+        write_vtt(out_sub, output)
+    elif output_ext == "":
+        print("You must specify a file extension.")
+    else:
+        print("This output extension is not available yet.")
+
 
 if __name__ == "__main__":
     args = parse_args()
     if args.max_words == 2:
-        if warning_sign("Caution: This will inevitably create single-word captions.\nASIF cannot condone misuse of this option.\nDo you want to continue?"):
+        if warning_sign("WARNING: This will inevitably create single-word captions.\nASIF cannot condone misuse of this option.\nDo you want to continue?"):
             main(args)
     else:
         main(args)
-    #transcribe(args.filename)
