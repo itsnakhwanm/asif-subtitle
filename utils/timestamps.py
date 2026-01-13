@@ -7,7 +7,7 @@ def build_from_words(segments):
 
         for word in segment:
             timeline.append({
-                "word": word["word"],
+                "text": word["word"],
                 "start": word["start"],
                 "end": word["end"],
                 "segment_id": segment["id"]

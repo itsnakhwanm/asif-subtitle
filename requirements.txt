@@ -1,8 +1,2 @@
 openai-whisper
-more-itertools
-numba
-numpy
-tiktoken
-torch
-tqdm
-triton
+faster-whisper
