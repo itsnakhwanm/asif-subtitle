@@ -1,35 +1,20 @@
 import re
 
-def normalize(s):
-    return re.sub(r"[^a-z0-9\-]", "", s.lower())
-
 def align_independent(segments, word_timestamps):
 
     out = []
-    w_norm = [normalize(w["word"]) for w in word_timestamps]
+    w_index = 0
     for segment in segments:
-        target = normalize(segment["word"])
-        best = None
-        for i in range(len(word_timestamps)):
-            acc = ""
-            start_time = word_timestamps[i]["start"]
-            for j in range(i, len(word_timestamps)):
-                acc += w_norm[j]
-                end_time = word_timestamps[j]["end"]
-                if acc == target:
-                    best = (start_time, end_time)
-                    break
-
-                if len(acc) > len(target):
-                    break
-
-            if best:
-                break
-
-        if best:
-            s, e = best
-        else:
-            s, e = segment["start"], segment["end"]
-
-        out.append({"word": segment["word"].strip(), "start": round(start_time, 3), "end": round(end_time, 3)})
+        text = segment["text"]
+        s_words = re.findall("\\b[\\w']+\\b",text)
+        for i in s_words:
+            print(i, word_timestamps[w_index])
+            print(s_words)
+            if re.search(f"{s_words[0]}",word_timestamps[w_index]["text"]):
+                start = word_timestamps[w_index]["start"]
+            if re.search(f"{s_words[-1]}",word_timestamps[w_index]["text"]):
+                end = word_timestamps[w_index]["end"]
+            w_index += 1
+        out.append({"text":text,"start":round(start, 3),"end":round(end, 3)})
+    print(out)
     return out

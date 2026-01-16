@@ -4,3 +4,12 @@ def warning_sign(message):
         return True
     else:
         return False
+
+def multiple_confirmation(messages):
+    for i in messages:
+        confirm = input(f"{i} [Y/n] ")
+        if confirm in ["Y","y"]:
+            continue
+        else:
+            break
+    return True

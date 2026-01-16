@@ -23,7 +23,7 @@ def get_text(transcription):
 def split_by_word_limit(segments, max_words=5):
     out = []
     for segment in segments:
-        words = segment["word"].split()
+        words = segment["text"].split()
         start = segment["start"]
         end   = segment["end"]
 
