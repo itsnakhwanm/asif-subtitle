@@ -9,7 +9,9 @@ def multiple_confirmation(messages):
     for i in messages:
         confirm = input(f"{i} [Y/n] ")
         if confirm in ["Y","y"]:
+            result = True
             continue
         else:
+            result = False
             break
-    return True
+    return result

@@ -30,11 +30,7 @@ def main(args):
 
     words   = get_word_timestamps(result)
     texts   = get_text(result)
-    if max_words >= 2:
-        texts = split_by_word_limit(texts,max_words=max_words)
-    elif max_words == 1:
-        texts = words
-
+    texts = split_by_word_limit(texts,max_words=max_words)
     out_sub = align_independent(texts, words)
     if output_ext == ".srt":
         write_srt(out_sub, output)
@@ -49,10 +45,10 @@ def main(args):
 if __name__ == "__main__":
     args = parse_args()
     if args.max_words == 2:
-        if warning_sign("WARNING: This will inevitably create single-word captions.\nASIF cannot condone misuse of this option.\nDo you want to continue?"):
+        if warning_sign("WARNING: This will inevitably create single-word captions.\nASIF cannot condone the misuse of this option.\nDo you want to continue?"):
             main(args)
     elif args.max_words == 1:
-        if multiple_confirmation(["Would you like to proceed?","Do you want to proceed?","LAST WARNING!!! Do you really want to proceed?"]):
+        if multiple_confirmation(["WARNING: This will create single-word captions.\nASIF does not condone any misuse of this option.\nResponsibility for the consequences belongs entirely to the user.\nWould you like to proceed?","Do you want to proceed?","LAST WARNING!!! Do you really want to proceed?"]):
             main(args)
     else:
         main(args)

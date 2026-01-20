@@ -55,10 +55,11 @@ def split_by_word_limit(segments, max_words=5):
                 chunk_end   = start + (word_index + len(chunk)) * step
                 out.append({"text": " ".join(chunk), "start":round(chunk_start,3), "end":round(chunk_end,3)})
                 word_index += len(chunk)
-        elif max_words == 2:
+        elif max_words == 2 or max_words == 1:
             for i in range(0, total_words, max_words):
                 chunks      = words[i:i+max_words]
                 chunk_start = start + i * step
                 chunk_end   = start + (i * len(chunks)) * step
-                out.append({"text": " ".join(chunk), "start":round(chunk_start,3), "end":round(chunk_end,3)})
+                out.append({"text": " ".join(chunks), "start":round(chunk_start,3), "end":round(chunk_end,3)})
+
     return out
